@@ -1,0 +1,124 @@
+Question 18: Create a clock. What will be your approach to solving this problem statement?
+
+source code:import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting time
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ClockScreen(),
+    );
+  }
+}
+
+class ClockScreen extends StatefulWidget {
+  @override
+  _ClockScreenState createState() => _ClockScreenState();
+}
+
+class _ClockScreenState extends State<ClockScreen> {
+  late Timer _timer;
+  DateTime _currentTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    // Start a timer that updates every second
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _currentTime = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel timer when widget is disposed
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedTime = DateFormat('HH:mm:ss').format(_currentTime);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Flutter Clock')),
+      body: Center(
+        child: Text(
+          formattedTime,
+          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting time
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ClockScreen(),
+    );
+  }
+}
+
+class ClockScreen extends StatefulWidget {
+  @override
+  _ClockScreenState createState() => _ClockScreenState();
+}
+
+class _ClockScreenState extends State<ClockScreen> {
+  late Timer _timer;
+  DateTime _currentTime = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    // Start a timer that updates every second
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        _currentTime = DateTime.now();
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel timer when widget is disposed
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String formattedTime = DateFormat('HH:mm:ss').format(_currentTime);
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Flutter Clock')),
+      body: Center(
+        child: Text(
+          formattedTime,
+          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+Hint 1:- Use flutter inbuilt library
+
+Hint 2:- Use only a timer.
+
+Hint 3:- Clock runs only for 1 sec.
