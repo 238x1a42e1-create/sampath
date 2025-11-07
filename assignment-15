@@ -1,0 +1,84 @@
+Question 20: Is there any way to rotate an image clock clockwise and anti-clockwise by clicking on a single button?
+
+Hint 1:- Use RotationTransition widget for rotation purposes.
+
+Hint 2:- Add a button for controlling image rotation. 
+
+source code:import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ClockRotationScreen(),
+    );
+  }
+}
+
+class ClockRotationScreen extends StatefulWidget {
+  @override
+  _ClockRotationScreenState createState() => _ClockRotationScreenState();
+}
+
+class _ClockRotationScreenState extends State<ClockRotationScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  bool _clockwise = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1),
+    );
+  }
+
+  void _rotateImage() {
+    setState(() {
+      _clockwise = !_clockwise;
+    });
+    if (_clockwise) {
+      _controller.forward(from: 0);
+    } else {
+      _controller.reverse(from: 1);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Clock Rotation')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            RotationTransition(
+              turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+              child: Image.asset(
+                'assets/clock.png', // Replace with your clock image
+                width: 200,
+                height: 200,
+              ),
+            ),
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: _rotateImage,
+              child: Text('Rotate Clockwise / Anti-clockwise'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
