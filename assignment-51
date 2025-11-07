@@ -1,0 +1,69 @@
+Question 18: Create a Flutter application that retrieves and displays user comments from the server using the API "https://jsonplaceholder.typicode.com/comments". The comments should include the name and email of each user. 
+
+source code:import 'package:flutter/material.dart';
+import 'model/comment.dart';
+import 'services/api_service.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Comments App',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: CommentScreen(),
+    );
+  }
+}
+
+class CommentScreen extends StatefulWidget {
+  @override
+  _CommentScreenState createState() => _CommentScreenState();
+}
+
+class _CommentScreenState extends State<CommentScreen> {
+  late Future<List<Comment>> commentsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    commentsFuture = ApiService.fetchComments();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('User Comments')),
+      body: FutureBuilder<List<Comment>>(
+        future: commentsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No comments found'));
+          } else {
+            final comments = snapshot.data!;
+            return ListView.builder(
+              itemCount: comments.length,
+              itemBuilder: (context, index) {
+                final comment = comments[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    child: Text(comment.name[0].toUpperCase()),
+                  ),
+                  title: Text(comment.name),
+                  subtitle: Text(comment.email),
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
