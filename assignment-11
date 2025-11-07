@@ -1,0 +1,77 @@
+Question 16: How to Show this result based on the given details:
+
+True-answers=6
+Wrong -answers=0
+Total-questions=6
+
+ 
+
+q08-2.png
+source code:import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ResultScreen(trueAnswers: 6, wrongAnswers: 0, totalQuestions: 6),
+    );
+  }
+}
+
+class ResultScreen extends StatelessWidget {
+  final int trueAnswers;
+  final int wrongAnswers;
+  final int totalQuestions;
+
+  ResultScreen({
+    required this.trueAnswers,
+    required this.wrongAnswers,
+    required this.totalQuestions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    String resultMessage;
+    String imageAsset;
+
+    // Logic to determine the message and image
+    if (trueAnswers == totalQuestions) {
+      resultMessage = "Excellent! You got all $trueAnswers out of $totalQuestions correct!";
+      imageAsset = 'assets/q08_2.png'; // success image
+    } else if (trueAnswers >= totalQuestions / 2) {
+      resultMessage = "Good job! You got $trueAnswers out of $totalQuestions correct.";
+      imageAsset = 'assets/partial_success.png';
+    } else {
+      resultMessage = "You got $trueAnswers out of $totalQuestions correct. Try again!";
+      imageAsset = 'assets/try_again.png';
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Quiz Result')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(imageAsset, width: 200, height: 200),
+            SizedBox(height: 20),
+            Text(
+              resultMessage,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+ 
+
+Hint 1:- Use imageview and textview, containers for showing the image and text.
+
+Hint 2:- Add the logic for showing the result based on true, and false values out of total questions.
