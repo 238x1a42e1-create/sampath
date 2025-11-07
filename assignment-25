@@ -1,0 +1,56 @@
+Question 1: Find the odd and even number in the given list and Showcase it in the UI based on numbers divided by 2 then show it in green color otherwise show it in red color. How will you resolve this problem statement?
+
+var numberList = [10,12,13,56,27,29,30];
+
+source code:import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Even & Odd Numbers',
+      home: NumberListScreen(),
+    );
+  }
+}
+
+class NumberListScreen extends StatelessWidget {
+  // List of numbers
+  final List<int> numberList = [10, 12, 13, 56, 27, 29, 30];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Even & Odd Numbers')),
+      body: ListView.builder(
+        itemCount: numberList.length,
+        itemBuilder: (context, index) {
+          int number = numberList[index];
+          bool isEven = number % 2 == 0;
+
+          return ListTile(
+            title: Text(
+              number.toString(),
+              style: TextStyle(
+                fontSize: 20,
+                color: isEven ? Colors.green : Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
+Hint 1:- Declare the list inside the dart file
+
+Hint 2:- Use numberList[index]%2==0 is divided by 2 otherwise not divided by 2
+
+Hint 3:- Add listView.builder to show the data in the UI
