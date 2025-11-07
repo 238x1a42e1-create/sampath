@@ -1,0 +1,126 @@
+Question 19: Create the form which consists firstName, lastName, phoneNumber, email, and all scenarios mentioned below:-
+
+  
+
+source code:import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Form Example')),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: UserForm(),
+        ),
+      ),
+    );
+  }
+}
+
+class UserForm extends StatefulWidget {
+  @override
+  _UserFormState createState() => _UserFormState();
+}
+
+class _UserFormState extends State<UserForm> {
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return FormBuilder(
+      key: _formKey,
+      child: Column(
+        children: [
+          // First Name
+          FormBuilderTextField(
+            name: 'firstName',
+            decoration: InputDecoration(labelText: 'First Name'),
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context),
+              FormBuilderValidators.minLength(context, 5,
+                  errorText: 'Minimum 5 characters required'),
+              FormBuilderValidators.maxLength(context, 15,
+                  errorText: 'Maximum 15 characters allowed'),
+            ]),
+          ),
+          SizedBox(height: 16),
+
+          // Last Name
+          FormBuilderTextField(
+            name: 'lastName',
+            decoration: InputDecoration(labelText: 'Last Name'),
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context),
+              FormBuilderValidators.minLength(context, 5,
+                  errorText: 'Minimum 5 characters required'),
+              FormBuilderValidators.maxLength(context, 15,
+                  errorText: 'Maximum 15 characters allowed'),
+            ]),
+          ),
+          SizedBox(height: 16),
+
+          // Phone Number
+          FormBuilderTextField(
+            name: 'phoneNumber',
+            decoration: InputDecoration(labelText: 'Phone Number'),
+            keyboardType: TextInputType.phone,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context),
+              FormBuilderValidators.numeric(context,
+                  errorText: 'Only numbers allowed'),
+              FormBuilderValidators.equalLength(context, 10,
+                  errorText: 'Phone number must be 10 digits'),
+            ]),
+          ),
+          SizedBox(height: 16),
+
+          // Email
+          FormBuilderTextField(
+            name: 'email',
+            decoration: InputDecoration(labelText: 'Email'),
+            keyboardType: TextInputType.emailAddress,
+            validator: FormBuilderValidators.compose([
+              FormBuilderValidators.required(context),
+              FormBuilderValidators.email(context,
+                  errorText: 'Enter a valid email'),
+            ]),
+          ),
+          SizedBox(height: 24),
+
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState?.saveAndValidate() ?? false) {
+                final values = _formKey.currentState!.value;
+                print('Form Values: $values');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Form submitted successfully!')),
+                );
+              } else {
+                print('Validation failed');
+              }
+            },
+            child: Text('Submit'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+● firstName and lastName should be a minimum character of 5 and a maximum of 15.
+● Add proper validation for email.
+● phoneNumber should be 10 digits and valid.
+
+How will you achieve this problem statement?
+
+Hint 1:- Only use FormBuilderTextField. 
+
