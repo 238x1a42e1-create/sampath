@@ -1,0 +1,107 @@
+Question 20: Implement a Flutter application that resembles the functionality of the "GET IT DONE" app, with the added feature of storing data on Firebase and incorporating email and password authentication. 
+source code:import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class TaskScreen extends StatefulWidget {
+  final User user;
+  TaskScreen({required this.user});
+
+  @override
+  _TaskScreenState createState() => _TaskScreenState();
+}
+
+class _TaskScreenState extends State<TaskScreen> {
+  final TextEditingController _taskController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  void _addTask() {
+    if (_taskController.text.isNotEmpty) {
+      _firestore
+          .collection('users')
+          .doc(widget.user.uid)
+          .collection('tasks')
+          .add({'title': _taskController.text, 'done': false});
+      _taskController.clear();
+    }
+  }
+
+  void _toggleDone(DocumentSnapshot taskDoc) {
+    _firestore
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('tasks')
+        .doc(taskDoc.id)
+        .update({'done': !(taskDoc['done'])});
+  }
+
+  void _deleteTask(DocumentSnapshot taskDoc) {
+    _firestore
+        .collection('users')
+        .doc(widget.user.uid)
+        .collection('tasks')
+        .doc(taskDoc.id)
+        .delete();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Get It Done')),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _taskController,
+                    decoration: InputDecoration(hintText: 'Enter a task'),
+                  ),
+                ),
+                IconButton(onPressed: _addTask, icon: Icon(Icons.add)),
+              ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _firestore
+                  .collection('users')
+                  .doc(widget.user.uid)
+                  .collection('tasks')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                final tasks = snapshot.data!.docs;
+
+                return ListView.builder(
+                  itemCount: tasks.length,
+                  itemBuilder: (context, index) {
+                    final task = tasks[index];
+                    return ListTile(
+                      title: Text(
+                        task['title'],
+                        style: TextStyle(
+                          decoration: task['done'] ? TextDecoration.lineThrough : null,
+                        ),
+                      ),
+                      leading: Checkbox(
+                        value: task['done'],
+                        onChanged: (_) => _toggleDone(task),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => _deleteTask(task),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
