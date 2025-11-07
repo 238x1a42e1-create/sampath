@@ -1,0 +1,99 @@
+Question 17: Implement email and password authentication in a Flutter app.
+source code:class AuthScreen extends StatefulWidget {
+  @override
+  _AuthScreenState createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<AuthScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Sign up user
+  Future<void> _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User registered: ${userCredential.user!.email}')),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.message}')),
+        );
+      }
+    }
+  }
+
+  // Sign in user
+  Future<void> _signIn() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User signed in: ${userCredential.user!.email}')),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.message}')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Email & Password Auth')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Enter email';
+                  if (!value.contains('@')) return 'Enter valid email';
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) return 'Enter password';
+                  if (value.length < 6) return 'Password must be at least 6 characters';
+                  return null;
+                },
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _signUp,
+                child: Text('Sign Up'),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _signIn,
+                child: Text('Sign In'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
